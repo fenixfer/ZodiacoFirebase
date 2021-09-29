@@ -6,7 +6,7 @@
             <q-img src="~/src/assets/carrusel3.jpg" style="height:750px" class="estiloimagen"> </q-img>
         </div>
         <!--Definimos onSubmit es el método que lo agregamos en el return-->
-        <q-form action class="form" @submit.prevent="procesarFormulario"> 
+        <q-form action class="form" @submit.prevent="onSubmit"> 
             
             <q-item-label class="title"> 
                 <h3>    
@@ -40,7 +40,7 @@
             <!-- <q-item-label class="form-label" for="#password">Repita la contraseña:</q-item-label>
             <q-input type="password" id="password" color="yellow" placeholder="Contraseña"/> -->
 
-            <q-input label-color="yellow" class="form-label" type="password" color="yellow" v-model="userForm.password2" label="Repetir contraseña :" required placeholder="contraseña" />
+            <q-input label-color="yellow" class="form-label" type="password" color="yellow" v-model="userForm.password" label="Repetir contraseña :" required placeholder="contraseña" />
 
             <div class="row justify-center">
                 <!-- <router-link to="/registro" class="routerlinkd"> -->
@@ -68,70 +68,76 @@
 <script>
 import { useQuasar } from 'quasar'
 import { ref } from 'vue'
-import axios from 'axios'
-import {mapActions,mapState} from 'vuex'
-//import router from 'src/router'
-import router from '../router/routes'
+import useAuth from '../composables/useAuth'
 
 export default {
     name: 'Registro',
     setup () {
+        //traemos el composable 
+        //El createUser el que vamos a estar llamando en onSubmitn en el return
+        const { createUser} = useAuth()
+
         //const $q = useQuasar()
 
         //const name = ref(null)
         //const age = ref(null)
         //const accept = ref(false)
+
         const userForm = ref({
             quicklookid: 'EJ123456',
             name: 'Fernando',
             lastname: 'Gonzalez',
             email: 'fer1@gmail.com',
             password: '123456',
-            password2: '',
         })
 
         return {
             userForm,
 
+            onSubmit: async() => {
+                console.log(userForm.value);
+                //createUser(userForm.value)
+            },
+            //name,
+            //age,
+            //accept,
+            colors: ['#f00', '#0f0', '#00f'],
             sizes: ['xs','sm','md','lg','xl'],
-        }
-    },
-    // methods: {
-    //     async registerUser() {
-    //         await axios.post("https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyA7V2g0I4gReTEjJ5e9VAR_I4dCrUuqD0w", {
-    //             email: this.userForm.email,
-    //             password: this.userForm.password,
-    //             returnSecureToken: true
-    //             });
-    //         },
-    // },
-    computed: {
-        bloquear(){
-            //Haciendo las validaciones
-            if(!this.userForm.email.includes('@')){
-                return true 
-            }
-            //El método para el password
-            if(this.userForm.password.length > 5 && this.userForm.password === this.userForm.password2){
-                return false 
-            }else {
-                return true
-            }
-        },
-        ...mapState(['error'])
-    },
-    methods: {
-        ...mapActions(['registrarUsuario']),
-        //para que cuando mandemos el formulario limpie los campos
-        async procesarFormulario(){
-            await this.registrarUsuario({email: this.userForm.email, password: this.userForm.password})
-            //Si no son validas las credenciales entonces que queden esos mismos datos para que lo acomode
-            // if(this.error.tipo !== null){
-            //     return
+
+            text: ref(''),
+            ph: ref(''),
+            ph2: ref(''),
+            ph3: ref(''),
+            ph4: ref(''),
+            dense: ref(false),
+            dense2: ref(false),
+            dense3: ref(false),
+            dense4: ref(false),
+            
+            // onSubmit () {
+            //     if (accept.value !== true) {
+            //         $q.notify({
+            //         color: 'red-5',
+            //         textColor: 'white',
+            //         icon: 'warning',
+            //         message: 'You need to accept the license and terms first'
+            //         })
+            //      }
+            //     else {
+            //         $q.notify({
+            //             color: 'green-4',
+            //             textColor: 'white',
+            //             icon: 'cloud_done',
+            //             message: 'Submitted'
+            //         })
+            //     }
+            // },
+
+            // onReset () {
+            //     name.value = null
+            //     age.value = null
+            //     accept.value = false
             // }
-            this.userForm.email = '';
-            this.userForm.password = '';
-            this.userForm.password2 = '';
         }
     }
 }
@@ -226,6 +232,7 @@ export default {
 }
 .form-input {
   //padding: 10px 15px;
+  margin-top: 1.2rem;
   background: none;
   background-image: none;
   border: 1px solid white;

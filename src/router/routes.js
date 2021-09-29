@@ -16,6 +16,11 @@ const routes = [
     component: () => import('pages/Registro.vue')
   },
   {
+    path: '/bienvenida',
+    name: 'bienvenida',
+    component: () => import('pages/Bienvenida.vue')
+  },
+  {
     path: '/loginvue2',
     component: () => import('pages/LoginChido.vue')
   },
@@ -26,5 +31,11 @@ const routes = [
     component: () => import('pages/Error404.vue')
   }
 ]
+
+
+// const router = createRouter({
+//   history: createWebHistory(process.env.BASE_URL),
+//   routes
+// })
 
 export default routes
