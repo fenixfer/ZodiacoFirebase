@@ -11,9 +11,12 @@
   },
   "dependencies": {
     "@quasar/extras": "^1.0.0",
+    "@vueuse/firebase": "^6.5.3",
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
+    "firebase": "^9.1.0",
     "quasar": "^2.0.0",
+    "vue-sweetalert2": "^5.0.2",
     "vuex": "^4.0.1"
   },
   "devDependencies": {

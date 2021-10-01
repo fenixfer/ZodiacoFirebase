@@ -1,11 +1,12 @@
 <template>
+  <!-- <div class="q-px-xl"> -->
 
     <div class="row justify-center">
         
        <div class="form2"> 
             <q-img src="~/src/assets/carrusel1.jpg" style="height:680px" class="estiloimagen"> </q-img>
         </div>
-        <q-form action class="form"> 
+        <q-form action class="form" @submit.prevent="procesarFormulario"> 
             
             <q-item-label class="title"> 
                 <h3>    
@@ -15,11 +16,11 @@
             <!-- <q-item-label class="form-label" for="#email">Correo:</q-item-label>
             <q-input type="email" id="email" color="yellow" required placeholder="ej123456@ncr.com" /> -->
 
-            <q-input label-color="yellow" class="form-label" type="email" color="yellow" v-model="ph" label="Correo :" required placeholder="EJ123456@ncr.com" :dense="dense"/>
+            <q-input dark label-color="yellow" class="form-label" type="email" color="yellow" v-model="userForm.email" label="Correo :" required placeholder="EJ123456@ncr.com"/>
 
             <!-- <q-item-label class="form-label" for="#password">Contraseña:</q-item-label>
             <q-input type="password" id="password" color="yellow" placeholder="Contraseña"/> -->
-            <q-input label-color="yellow" class="form-label" type="password" color="yellow" v-model="ph2" label="Contraseña :" required placeholder="Contraseña" :dense="dense2"/>
+            <q-input dark label-color="yellow" class="form-label" type="password" color="yellow" v-model="userForm.password" label="Contraseña :" required placeholder="Contraseña"/>
 
             <br>
             <br>
@@ -45,12 +46,15 @@
         </q-form>
     </div>
 
-    
+  <!-- </div> -->
 </template>
 
 <script>
 import { useQuasar } from 'quasar'
 import { ref } from 'vue'
+import {mapActions,mapState} from 'vuex'
+
+
 export default {
     name: 'Login',
     setup () {
@@ -59,9 +63,18 @@ export default {
         // const name = ref(null)
         // const age = ref(null)
         // const accept = ref(false)
+        const userForm = ref({
+            //quicklookid: '',
+            //name: '',
+            //lastname: '',
+            email: '',
+            password: '',
+            //password2: '',
+        })
         
         
         return {
+            userForm,
             //name,
             //age,
             //accept,
@@ -72,6 +85,38 @@ export default {
             dense: ref(false),
             dense2: ref(false),
 
+        }
+    },
+    computed: {
+        bloquear(){
+            //Haciendo las validaciones
+            if(!this.userForm.email.includes('@')){
+                return true 
+            }
+            //El método para el password
+            if(this.userForm.password .length > 5){
+                return false 
+            }else {
+                return true
+            }
+        },
+        //Mapeamos el error que se declara en la alerta y llamamos al error
+        ...mapState(['error'])
+    },
+    methods: {
+        ...mapActions(['ingresoUsuario']),
+        //para que cuando mandemos el formulario limpie los campos
+        async procesarFormulario(){
+            //el await espera la respuesta del servidor
+            //TODO: ESTO LO TENGO QUE CAMBIAR EN EL REGISTRO
+            await this.ingresoUsuario({email: this.userForm.email, password: this.userForm.password})
+            //Si no son validas las credenciales entonces que queden esos mismos datos para que lo acomode
+            if(this.error.tipo !== null){
+                return
+            }
+            //TODO: ESTO TAMBIÉN LO TENGO QUE CAMBIAR EN EL REGISTRO
+            this.userForm.email = '';
+            this.userForm.password = '';
         }
     }
 }
@@ -95,7 +140,7 @@ export default {
 //---display: inline-block;
   //margin: 20px;
   //padding: 20px;
-  margin: 6rem -1px;
+  margin: 2rem -1px;
   //display: flex;
   //---flex-direction: column;
   //--justify-content: center;
@@ -114,7 +159,7 @@ export default {
   //box-shadow: 0 4px 20px 8px rgba(20, 117, 52, 0.3);
 }
 .form2 {
-  margin: 6rem -1px;
+  margin: 2rem -1px;
   //display: flex;
   //--display: inline-block;
   //margin: 20px;
@@ -160,7 +205,7 @@ export default {
     justify-content: center;
 }
 .form-label {
-  margin-top: 1rem;
+  margin-top: 1.5rem;
   color: white;
   //margin-bottom: 0.5rem;
 //   &:first-of-type {

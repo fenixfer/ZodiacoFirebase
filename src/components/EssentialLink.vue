@@ -19,13 +19,25 @@
       </q-item-label>
     </q-item-section>
   </q-item>
+  <!-- <h1>aaa</h1> -->
 </template>
 
 <script>
-import { defineComponent } from 'vue'
+import { defineComponent} from 'vue'
+//importamos el auth para autorizaciñon lo que instale @vue/firebase
+//import {useAuth} from '@vueuse/firebase'
 
 export default defineComponent({
   name: 'EssentialLink',
+  // setup () {
+  //   //Para mostrar el usuario
+  //   const {isAuthenticated, user} = useAuth()
+
+  //   return {
+  //     isAuthenticated, 
+  //     user,
+  //   }
+  // },
   props: {
     title: {
       type: String,
@@ -46,6 +58,8 @@ export default defineComponent({
       type: String,
       default: ''
     }
+  
   }
+  
 })
 </script>

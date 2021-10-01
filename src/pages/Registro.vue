@@ -3,7 +3,7 @@
     <div class="row justify-center">
         
        <div class="form2"> 
-            <q-img src="~/src/assets/carrusel3.jpg" style="height:750px" class="estiloimagen"> </q-img>
+            <q-img src="~/src/assets/carrusel3.jpg" style="height:780px" class="estiloimagen"> </q-img>
         </div>
         <!--Definimos onSubmit es el método que lo agregamos en el return-->
         <q-form action class="form" @submit.prevent="procesarFormulario"> 
@@ -16,16 +16,19 @@
             <!-- <q-item-label class="form-label" for="#qid">QuicklookID:</q-item-label>
             <q-input id="qid" color="yellow" required placeholder="EJ123456"/> -->
             <!--bg-white pendiente -->
-            <q-input label-color="yellow" class="form-label" color="yellow" v-model="userForm.quicklookid" label="QuicklookID :" required placeholder="EJ123456"/>
+            <!-- Dark es para el color blanco del input es lo inverso -->
+            <q-input dark label-color="yellow" class="form-label" color="yellow" v-model="userForm.quicklookid" label="QuicklookID :" required placeholder="EJ123456"/>
 
-            <q-input label-color="yellow" class="form-label" color="yellow" v-model="userForm.name" label="Nombre :" type="text" required placeholder="Nombre"/>
+            <q-input dark label-color="yellow" class="form-label" color="yellow" v-model="userForm.name" label="Nombre :" type="text" required placeholder="Nombre"/>
 
-            <q-input label-color="yellow" class="form-label" color="yellow" v-model="userForm.lastname" label="Apellido :" type="text" required placeholder="Apellido"/>
+            <q-input dark label-color="yellow" class="form-label" color="yellow" v-model="userForm.lastname" label="Apellido :" type="text" required placeholder="Apellido"/>
 
             <!-- <q-item-label class="form-label" for="#email">Correo:</q-item-label>
             <q-input type="email" id="email" color="yellow" required placeholder="ej123456@ncr.com"/> -->
-
-            <q-input label-color="yellow" class="form-label" type="email" color="yellow" v-model="userForm.email" label="Correo :" required placeholder="EJ123456@ncr.com"/>
+            <!--Este sirve--->
+            <!-- class='form-label' -->
+            <q-input dark label-color="yellow" type="email" color="yellow" v-model="userForm.email" label="Correo :" required placeholder="EJ123456@ncr.com"
+            :class="[error.tipo === 'email' ? 'is-invalid': '']"/>
             <!----ESTA FORMA ME GUSTOOOOOO
             <q-input label-color="white" class="form-label" type="email" filled color="yellow" v-model="ph2" label="Correo" required placeholder="EJ123456@ncr.com" :dense="dense2"/>
             ---->   
@@ -34,21 +37,26 @@
             <!-- <q-item-label class="form-label" for="#password">Contraseña:</q-item-label>
             <q-input type="password" id="password" color="yellow" placeholder="Contraseña"/> -->
 
-            <q-input label-color="yellow" class="form-label" type="password" color="yellow" v-model="userForm.password" label="Contraseña :" required placeholder="contraseña" />
+            <q-input dark label-color="yellow" class="form-label" type="password" color="yellow" v-model="userForm.password" label="Contraseña :" required placeholder="contraseña" />
 
 
             <!-- <q-item-label class="form-label" for="#password">Repita la contraseña:</q-item-label>
             <q-input type="password" id="password" color="yellow" placeholder="Contraseña"/> -->
 
-            <q-input label-color="yellow" class="form-label" type="password" color="yellow" v-model="userForm.password2" label="Repetir contraseña :" required placeholder="contraseña" />
+            <q-input dark label-color="yellow" class="form-label" type="password" color="yellow" v-model="userForm.password2" label="Repetir contraseña :" required placeholder="contraseña" />
 
             <div class="row justify-center">
                 <!-- <router-link to="/registro" class="routerlinkd"> -->
-                <q-btn rounded class="btnformR" glossy size="md" label="Registrar" type="submit"/>
+                <q-btn rounded class="btnformR" glossy size="md" label="Registrar" type="submit" :disabled="bloquear"/>
                 <!-- </router-link> -->
             </div>
 
             <br>
+            <!-- <div class="row justify-center"> -->
+            <router-link to="/login">
+                <p class="text-center text-green">Ingrese si ya tiene cuenta</p>
+            </router-link> 
+            <!-- </div> -->
             <!-- <q-toggle v-model="accept" color="yellow" keep-color class="terminosbtn" label="Acepto." /> -->
             <!-- <div class="row justify-center"> justify-center Para centrar btn -->
                 <!-- <q-btn class="btnform" glossy label="Ingresar" type="submit" />
@@ -66,12 +74,13 @@
 </template>
 
 <script>
-import { useQuasar } from 'quasar'
-import { ref } from 'vue'
+import {useQuasar, QSpinnerFacebook } from 'quasar'
+import { ref , onBeforeUnmount } from 'vue'
 import axios from 'axios'
 import {mapActions,mapState} from 'vuex'
 //import router from 'src/router'
 import router from '../router/routes'
+
 
 export default {
     name: 'Registro',
@@ -82,18 +91,66 @@ export default {
         //const age = ref(null)
         //const accept = ref(false)
         const userForm = ref({
-            quicklookid: 'EJ123456',
-            name: 'Fernando',
-            lastname: 'Gonzalez',
-            email: 'fer1@gmail.com',
+            quicklookid: 'AB123456',
+            name: 'Fer',
+            lastname: 'G',
+            email: 'fer21@gmail.com',
             password: '123456',
-            password2: '',
+            password2: '123456',
         })
+        //------Para el loading
+        const $q = useQuasar()
+        let timer
+        
+        onBeforeUnmount(() => {
+            if (timer !== void 0) {
+                clearTimeout(timer)
+                $q.loading.hide()
+            }
+        })
+        //-------Loading
+        
 
         return {
             userForm,
 
             sizes: ['xs','sm','md','lg','xl'],
+
+            loading: false,
+
+            //--------Para el loading
+            showLoading () {
+                $q.loading.show({
+                    message: '<b>Espere un momento por favor.</b><br/><span class="text-primary">Registrando...</span>',
+                    html: true
+                })
+                
+                // hiding in 3s
+                timer = setTimeout(() => {
+                    $q.loading.hide()
+                    timer = void 0
+                }, 2000)
+            }
+        //-----------Loading
+
+    //         showLoading () {
+    //     $q.loading.show({
+    //       spinner: QSpinnerFacebook,
+    //       spinnerColor: 'yellow',
+    //       spinnerSize: 140,
+    //       backgroundColor: 'purple',
+    //       message: 'Some important process is in progress. Hang on...',
+    //       messageColor: 'black'
+    //     })
+
+    //     // hiding in 3s
+    //     timer = setTimeout(() => {
+    //       $q.loading.hide()
+    //       timer = void 0
+    //     }, 3000)
+    //   }
+
+
         }
     },
     // methods: {
@@ -122,9 +179,10 @@ export default {
     },
     methods: {
         ...mapActions(['registrarUsuario']),
+        //...mapActions(['registrarUsuarioB']),
         //para que cuando mandemos el formulario limpie los campos
         async procesarFormulario(){
-            await this.registrarUsuario({email: this.userForm.email, password: this.userForm.password})
+            await this.registrarUsuario({displayName: this.userForm.name + ' ' + this.userForm.lastname,email: this.userForm.email, password: this.userForm.password})
             //Si no son validas las credenciales entonces que queden esos mismos datos para que lo acomode
             // if(this.error.tipo !== null){
             //     return
@@ -132,7 +190,8 @@ export default {
             this.userForm.email = '';
             this.userForm.password = '';
             this.userForm.password2 = '';
-        }
+        },
+
     }
 }
 </script>
@@ -152,7 +211,7 @@ export default {
 //---display: inline-block;
   //margin: 20px;
   //padding: 20px;
-  margin: 6rem -1px;
+  margin: 2rem -1px;
   //display: flex;
   //---flex-direction: column;
   //--justify-content: center;
@@ -171,7 +230,7 @@ export default {
   //box-shadow: 0 4px 20px 8px rgba(20, 117, 52, 0.3);
 }
 .form2 {
-  margin: 6rem -1px;
+  margin: 2rem -1px;
   //display: flex;
   //--display: inline-block;
   //margin: 20px;
@@ -218,7 +277,7 @@ export default {
     justify-content: center;
 }
 .form-label {
-  margin-top: 1.2rem;
+  margin-top: 1rem;
   //margin-bottom: 0.5rem;
 //   &:first-of-type {
 //     margin-top: 0rem;
