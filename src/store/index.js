@@ -7,9 +7,20 @@ import { createStore } from 'vuex'
 import router from '../router/routes'
 import axios from 'axios'
 
+
 // ES6 Modules or TypeScript
+
+//------------------------------------
+
+import Vue from 'vue';
+
+
+//---------------------------------
+
 import Swal from 'sweetalert2'
 
+const ENDPOINT_F = "https://identitytoolkit.googleapis.com/v1/accounts";
+const ENDPOINT_A = "=AIzaSyA7V2g0I4gReTEjJ5e9VAR_I4dCrUuqD0w";
 
 
 // import example from './module-example'
@@ -33,19 +44,34 @@ export default store(function (/* { ssrContext } */) {
       
       error: {
         tipo: null, mensaje: null
-      }
+      },
+      //Agregando los demás
+      idToken: null,
+      refreshToken: null,
+      status: 'not-authenticated',
+
     },
     mutations:{
       setUser(state, payload){
         state.user = payload
       },
+      //---------Este lo ingresamos para los datos
+      setIdToken(state, payload){
+        state.user = payload,
+        state.idToken = payload,
+        state.refreshToken = payload,
+        state.status = payload       
+      },
     },
     actions: {
+      async inicioUsuario(){
+        this.$router.push({ path: '/' })
+      },
       //-----------------Ingreso de usuario
       async ingresoUsuario({commit}, usuario ) {
         const Swal = require('sweetalert2')
         try {
-          const data = await axios.post('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyA7V2g0I4gReTEjJ5e9VAR_I4dCrUuqD0w',{
+          const data = await axios.post(ENDPOINT_F+':signInWithPassword?key'+ENDPOINT_A,{
             email: usuario.email,
             password: usuario.password,
             returnSecureToken: true
@@ -53,7 +79,7 @@ export default store(function (/* { ssrContext } */) {
           
         commit('setUser', data)
 
-        this.$router.push({ path: '/bienvenida' })
+        this.$router.push({ path: '/' })
 
           
         } catch (error) {
@@ -83,7 +109,7 @@ export default store(function (/* { ssrContext } */) {
       //const { email, password} = usuario
       try {
         //const res = 
-        const data = await axios.post("https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyA7V2g0I4gReTEjJ5e9VAR_I4dCrUuqD0w", {
+        const data = await axios.post(ENDPOINT_F+":signUp?key"+ENDPOINT_A, {
           //Esto sirve normal
           // email: usuario.email,
           // password: usuario.password,
@@ -198,6 +224,30 @@ export default store(function (/* { ssrContext } */) {
       //   //console.log(error.response);
       // }
     },
+    async usuarioname({commit}, usuario){
+      const idToken = localStorage.getItem('idToken')
+      const refreshToken = localStorage.getItem('idToken')
+
+      if(!idToken){
+        commit()
+
+      }
+
+
+      // try {
+      //   const data = await axios.post(ENDPOINT_F+':lookup?key'+ENDPOINT_F,{
+      //       idToken = usuario.idToken
+      //   }).then((result) =>{ this.result = result.data})        
+
+      //   commit('setUser', data)
+      // } catch (error) {
+      //   console.log(error);
+      // }
+    },
+
+
+
+
     async registrarUsuarioB ({commit}, usuario){
       
       const userDB = await registrarUsuario()
@@ -214,6 +264,41 @@ export default store(function (/* { ssrContext } */) {
 
     }
 
+
+  },
+
+
+  //----------Lo nuevo
+  async checkAuthentication({commit}, usuario){
+    const idToken = localStorage.getItem('idToken')
+    const refreshToken = localStorage.getItem('idToken')
+
+    //Si no tenemos el idToken significa que no esta autenticado el usuario
+    if(!idToken){
+      commit('setIdToken')
+      return {ok: false, message: 'No hay token'}
+    }
+
+    try {
+      const data = await axios.post(ENDPOINT_F+':lookup?key'+ENDPOINT_A,{
+        idToken
+      })
+      console.log(data)
+      const {displayName, email} = data
+
+      const user = {
+        name: displayName,
+        email
+      }
+      
+      commit('setIdToken', usuario)
+
+      return{ok: true}
+
+    } catch (error) {
+      commit('setIdToken')
+      return {ok: false, message: error.response.data.error.message}
+    }
 
   },
     // enable strict mode (adds overhead!)

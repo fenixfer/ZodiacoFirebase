@@ -17,17 +17,17 @@
             <q-input id="qid" color="yellow" required placeholder="EJ123456"/> -->
             <!--bg-white pendiente -->
             <!-- Dark es para el color blanco del input es lo inverso -->
-            <q-input dark label-color="yellow" class="form-label" color="yellow" v-model="quicklookid" label="QuicklookID :" required placeholder="EJ123456"/>
+            <q-input dark label-color="yellow" class="form-label" color="yellow" v-model="userForm.quicklookid" label="QuicklookID :" required placeholder="EJ123456"/>
 
-            <q-input dark label-color="yellow" class="form-label" color="yellow" v-model="name" label="Nombre :" type="text" required placeholder="Nombre"/>
+            <q-input dark label-color="yellow" class="form-label" color="yellow" v-model="userForm.name" label="Nombre :" type="text" required placeholder="Nombre"/>
 
-            <q-input dark label-color="yellow" class="form-label" color="yellow" v-model="lastname" label="Apellido :" type="text" required placeholder="Apellido"/>
+            <q-input dark label-color="yellow" class="form-label" color="yellow" v-model="userForm.lastname" label="Apellido :" type="text" required placeholder="Apellido"/>
 
             <!-- <q-item-label class="form-label" for="#email">Correo:</q-item-label>
             <q-input type="email" id="email" color="yellow" required placeholder="ej123456@ncr.com"/> -->
             <!--Este sirve--->
             <!-- class='form-label' -->
-            <q-input dark label-color="yellow" type="email" color="yellow" v-model="email" label="Correo :" required placeholder="EJ123456@ncr.com"
+            <q-input dark label-color="yellow" type="email" color="yellow" v-model="userForm.email" label="Correo :" required placeholder="EJ123456@ncr.com"
             :class="[error.tipo === 'email' ? 'is-invalid': '']"/>
             <!----ESTA FORMA ME GUSTOOOOOO
             <q-input label-color="white" class="form-label" type="email" filled color="yellow" v-model="ph2" label="Correo" required placeholder="EJ123456@ncr.com" :dense="dense2"/>
@@ -37,13 +37,13 @@
             <!-- <q-item-label class="form-label" for="#password">Contraseña:</q-item-label>
             <q-input type="password" id="password" color="yellow" placeholder="Contraseña"/> -->
 
-            <q-input dark label-color="yellow" class="form-label" type="password" color="yellow" v-model="password" label="Contraseña :" required placeholder="contraseña" />
+            <q-input dark label-color="yellow" class="form-label" type="password" color="yellow" v-model="userForm.password" label="Contraseña :" required placeholder="contraseña" />
 
 
             <!-- <q-item-label class="form-label" for="#password">Repita la contraseña:</q-item-label>
             <q-input type="password" id="password" color="yellow" placeholder="Contraseña"/> -->
 
-            <q-input dark label-color="yellow" class="form-label" type="password" color="yellow" v-model="password2" label="Repetir contraseña :" required placeholder="contraseña" />
+            <q-input dark label-color="yellow" class="form-label" type="password" color="yellow" v-model="userForm.password2" label="Repetir contraseña :" required placeholder="contraseña" />
 
             <div class="row justify-center">
                 <!-- <router-link to="/registro" class="routerlinkd"> -->
@@ -81,11 +81,6 @@ import {mapActions,mapState} from 'vuex'
 //import router from 'src/router'
 import router from '../router/routes'
 
-//Este lo agregue apenas para registrar usuarios en la db
-import {auth, db} from 'boot/firebase'
-import Swal from 'sweetalert2'
-//-------------------
-
 
 export default {
     name: 'Registro',
@@ -95,21 +90,14 @@ export default {
         //const name = ref(null)
         //const age = ref(null)
         //const accept = ref(false)
-        // const userForm = ref({
-        //     quicklookid: 'AB123456',
-        //     name: 'Fer',
-        //     lastname: 'G',
-        //     email: 'fer21@gmail.com',
-        //     password: '123456',
-        //     password2: '123456',
-        // })
-        const quicklookid = ref("");
-        const name = ref("");
-        const lastname = ref("");
-        const email = ref("");
-        const password = ref("");
-        const password2 = ref("");
-
+        const userForm = ref({
+            quicklookid: 'AB123456',
+            name: 'Fer',
+            lastname: 'G',
+            email: 'fer21@gmail.com',
+            password: '123456',
+            password2: '123456',
+        })
         //------Para el loading
         const $q = useQuasar()
         let timer
@@ -124,13 +112,7 @@ export default {
         
 
         return {
-            // userForm,
-            quicklookid,
-            name,
-            lastname,
-            email,
-            password,
-            password2,
+            userForm,
 
             sizes: ['xs','sm','md','lg','xl'],
 
@@ -183,11 +165,11 @@ export default {
     computed: {
         bloquear(){
             //Haciendo las validaciones
-            if(!this.email.includes('@')){
+            if(!this.userForm.email.includes('@')){
                 return true 
             }
             //El método para el password
-            if(this.password.length > 5 && this.password === this.password2){
+            if(this.userForm.password.length > 5 && this.userForm.password === this.userForm.password2){
                 return false 
             }else {
                 return true
@@ -196,67 +178,18 @@ export default {
         ...mapState(['error'])
     },
     methods: {
-        //Esto sirve
-        // ...mapActions(['registrarUsuario']),
+        ...mapActions(['registrarUsuario']),
         //...mapActions(['registrarUsuarioB']),
         //para que cuando mandemos el formulario limpie los campos
         async procesarFormulario(){
-            
-            const Swal = require('sweetalert2')
-
-            //Esto sirve pero lo cambie por el email
-            // await this.registrarUsuario({displayName: this.userForm.name + ' ' + this.userForm.lastname,email: this.userForm.email, password: this.userForm.password})
-             
-             try {
-                const usuario = await auth.createUserWithEmailAndPassword(this.email , this.password)
-                // const usuario = await auth.signInWithEmailAndPassword(this.email,this.password)
-                await db.collection('usuarios').doc(usuario.user.uid).set({ 
-                    email: usuario.user.email,
-                    estado: true,
-                    uid: usuario.user.uid
-                })
-                console.log(usuario.user);
-                
-                Swal.fire({
-                    //position: 'top-end',
-                    icon: 'success',
-                    title: 'Se a registrado.',
-                    showConfirmButton: false,
-                    timer: 2000
-                })
-
-                
-                setTimeout( () => this.$router.push({ path: '/'}), 2000);
-
-                // this.$router.push({ path: '/login' })
-
-                //  this.$router.push({path: '/'})
-
-                // Todo: Tengo que checar esto
-                //await db.collecion('usuarios').doc(usuario.user.uid).update({
-                //     estado: true,
-                // })
-                
-                // await this.inicioUsuario()
-            } catch (error) {
-                Swal.fire({
-                title: 'Error',
-                text: 'Usuario ya registrado',
-                icon: 'error',
-                confirmButtonText: 'Entendido',
-                confirmButtonColor: '#E84176',
-                })
-                
-            }
-
-            //--------------------------------
+            await this.registrarUsuario({displayName: this.userForm.name + ' ' + this.userForm.lastname,email: this.userForm.email, password: this.userForm.password})
             //Si no son validas las credenciales entonces que queden esos mismos datos para que lo acomode
             // if(this.error.tipo !== null){
             //     return
             // }
-            // this.userForm.email = '';
-            // this.userForm.password = '';
-            // this.userForm.password2 = '';
+            this.userForm.email = '';
+            this.userForm.password = '';
+            this.userForm.password2 = '';
         },
 
     }

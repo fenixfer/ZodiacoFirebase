@@ -83,7 +83,10 @@ module.exports = configure(function (ctx) {
 
     // https://v2.quasar.dev/quasar-cli/quasar-conf-js#Property%3A-framework
     framework: {
-      config: {},
+      //Esto lo cambie para cuando cambiaba de fondo dark or white
+      config: {
+        dark: 'auto'
+      },
 
       // iconSet: 'material-icons', // Quasar icon set
       // lang: 'en-US', // Quasar language pack
@@ -92,9 +95,8 @@ module.exports = configure(function (ctx) {
       // (like functional components as one of the examples),
       // you can manually specify Quasar components/directives to be available everywhere:
       //
-      // components: [],
+      // components: ['QDatetimePicker'],
       // directives: [],
-
       // Quasar plugins
       plugins: [
         'Loading'
