@@ -163,7 +163,7 @@ export default {
     
     computed: {
         bloquear(){
-           if(this.password.length > 5 && this.email.includes('@')){
+           if(this.password.length >= 6 && this.email.includes('@')){
                 return false 
             }else {
                 return true
@@ -183,7 +183,8 @@ export default {
                 await db.collection('usuarios').doc(usuario.user.uid).update({ 
                 estado: true,
              })
-                console.log(usuario.user);  
+                //Este va
+                // console.log(usuario.user);  
             
 
                 setTimeout( () => this.$router.push({ path: '/'}), 3000);
@@ -197,7 +198,8 @@ export default {
                 
                 // await this.inicioUsuario()
             } catch (error) {
-                console.log(error);
+                //Este va
+                // console.log(error);
                 setTimeout( () =>
                     Swal.fire({
                     icon: 'error',

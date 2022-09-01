@@ -53,7 +53,7 @@
 
             <br>
             <!-- <div class="row justify-center"> -->
-            <router-link to="/login">
+            <router-link to="/ingreso">
                 <p class="text-center text-green">Ingrese si ya tiene cuenta</p>
             </router-link> 
             <!-- </div> -->
@@ -187,7 +187,7 @@ export default {
                 return true 
             }
             //El método para el password
-            if(this.password.length > 5 && this.password === this.password2){
+            if(this.password.length >= 6 && this.password === this.password2){
                 return false 
             }else {
                 return true
@@ -215,7 +215,8 @@ export default {
                     estado: true,
                     uid: usuario.user.uid
                 })
-                console.log(usuario.user);
+                //Este va
+                // console.log(usuario.user);
                 
                 Swal.fire({
                     //position: 'top-end',

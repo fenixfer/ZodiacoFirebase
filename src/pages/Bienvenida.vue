@@ -18,7 +18,7 @@
       </q-parallax>
     <!-- </div> -->
   
-    <h1>Hola</h1>
+    <h1>Hola Fer</h1>
 
   </q-layout>
   <!-- </div> -->

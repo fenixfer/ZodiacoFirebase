@@ -26,8 +26,8 @@
     </div>
 
     <div v-else class="imagenlist" align="center">
-        <h4>Seleccione a alguien para hablar.</h4>
-        <!-- <h5 class="q-mt-xl"> Selecciona a un usuario para hablar.</h5> -->
+        <h4>Seleccione a alguien para hablar por favor valeeee siii 123456789 dockerizando.</h4>
+        <!-- <h5 class="q-mt-xl"> Selecciona a un usuario para hablar por favor.</h5> -->
         <q-img src="~/src/assets/chat.png" style="width: 100%" class="alingItems-center"> </q-img>
 
     </div>
@@ -59,7 +59,8 @@ export default {
         const uidSeleccionado = inject('uidSeleccionado')
         //Junto con esto al presionar a quien le enviamos mensajes regresa el uid
         watchEffect(() => {
-            console.log(uidSeleccionado.value);
+            //este va
+            // console.log(uidSeleccionado.value);
         })
 
         //Para comprobar los mensajes pintarlos en el chat

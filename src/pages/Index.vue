@@ -16,7 +16,7 @@
     >
       <q-carousel-slide :name="1" img-src="~/src/assets/welcome.jpg" >
         <div class="absolute-bottom custom-caption">
-          <div class="text-h2">ZODIACO</div>
+          <div class="text-h2">ZODIACO V2 bien vale dos 1</div>
           <div class="text-subtitle1">Es hora de conocer un nuevo mundo.</div>
         </div>
       </q-carousel-slide>
@@ -41,7 +41,10 @@
     </q-carousel>
   </div>
   <div class="welcometext">
-   <h2> Es un gusto darte la Bienvenida.</h2>
+   <h2> Es un gusto darte la Bienvenida Fernando Gonzalez.</h2>
+   <h2> Prueba.</h2>
+   <h2> Prueba nuevos comandos.</h2>
+
   </div>
 </template>
 

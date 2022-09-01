@@ -43,14 +43,14 @@ export default {
         .onSnapshot((snapshot) => {
             snapshot.docChanges().forEach((change) => {
                 if (change.type === "added") {
-                    console.log("Usuario nuevo: ", change.doc.data());
+                    // console.log("Usuario nuevo: ", change.doc.data());
                     //ir llenando al usuario
                     users.value = [...users.value, change.doc.data()]
                     //para ordenar los que estan activos y los que no
                     users.value = users.value.sort((a,b) => b.estado - a.estado);
                 }
                 if (change.type === "modified") {
-                    console.log("Usuario modificado: ", change.doc.data());
+                    // console.log("Usuario modificado: ", change.doc.data());
                     //cuando se modifica el estado
                     users.value = users.value.map(user =>
                         user.uid === change.doc.data().uid
@@ -61,17 +61,21 @@ export default {
                     users.value = users.value.sort((a,b) => b.estado - a.estado);
                 }
                 if (change.type === "removed") {
-                    console.log("Remover usuario: ", change.doc.data());
+                    // console.log("Remover usuario: ", change.doc.data());
                 }
             });
         });
         //Para que no aparezca nosotros mismos en el chat
         const arraySinUser = computed(() => {
             return users.value.filter(item => item.uid !== user.value.uid)
+            // return users.value.filter(item => item.uid !== user.value.uid)
+
         })
         return {
             uidSeleccionado,
-            arraySinUser
+            arraySinUser,
+            //Esta la puse por que no daba
+            user,
         }
     },
 }

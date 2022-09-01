@@ -133,14 +133,21 @@ const linksList = [
     caption: 'Chat',
     icon: 'question_answer',
     // icon: 'las la-comments',
-    link: 'chat'
+    link: '#/chat'
+  },
+  {
+    title: 'Tareas',
+    caption: 'Visualiza y cambia datos',
+    icon: 'person',
+    // icon: 'las la-user-check',
+    link: '#/bienvenida'
   },
   {
     title: 'Mi información',
     caption: 'Visualiza y cambia datos',
     icon: 'person',
     // icon: 'las la-user-check',
-    link: 'myaccount'
+    link: '#/myaccount'
   },
 ];
 
